@@ -94,6 +94,14 @@ function push: setCanvas(name)
     return love.graphics.setCanvas({canvasTable.canvas, stencil = canvasTable.stencil})
 end
 
+function push: getCanvasTable(name)
+    for i = 1, #self.canvases do
+        if self.canvases[i].name == name then
+            return self.canvases[i]
+        end
+    end
+end
+
 function push: setShader(name, shader)
     if not shader then
         self: getCanvasTable("_render").shader = name
@@ -113,7 +121,7 @@ function push: initValues()
     if self._stretched then
         self._OFFSET = {x = 0, y = 0}
     else
-        local scale = math.min(self._SCALE.x, self.SCALE.y)
+        local scale = math.min(self._SCALE.x, self._SCALE.y)
         if self._pixelperfect then 
             scale = math.floor(scale)
         end
@@ -133,7 +141,7 @@ end
 function push: start()
     if self._canvas then
         love.graphics.push()
-        love.graphics.setCanvas({self.setCanvas[1].canvas, stencil = self.canvases[1].stencil})
+        love.graphics.setCanvas({self.canvases[1].canvas, stencil = self.canvases[1].stencil})
     else
         love.graphics.translate(self._OFFSET.x, self._OFFSET.y)
         love.graphics.setScissor(self._OFFSET.x, self._OFFSET.y, self._WWIDTH * self._SCALE.x, self._WWIDTH * self._SCALE.y)
@@ -170,7 +178,7 @@ function push: applyShaders(canvas, shaders)
 
         love.graphics.pop()
         love.graphics.setCanvas(_canvas)
-        love.draw(outputCanvas)
+        love.graphics.draw(outputCanvas)
     end
 
     love.graphics.setShader(_shader)

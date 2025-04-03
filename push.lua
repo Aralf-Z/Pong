@@ -32,6 +32,13 @@ function push: resetSettings()
     return self:applySettings(self.defaults)
 end
 
+---Set the Screen as the scale of game window and the real scale of the game world
+---@param WWIDTH number window's width
+---@param WHEIGHT number window's height
+---@param RWIDTH number real width
+---@param RHEIGHT number real height
+---@param settings table
+---@return table self
 function push: setupScreen(WWIDTH, WHEIGHT, RWIDTH, RHEIGHT, settings)
     settings = settings or {}
 
@@ -134,6 +141,9 @@ function push: initValues()
     self._GHEIGHT = self._RHEIGHT * self._PSCALE - self._OFFSET.y * 2
 end
 
+---Operate the push
+---@param operation string start, end
+---@param shader any
 function push: apply(operation, shader)
     self._drawFunctions[operation](self, shader)
 end
@@ -267,6 +277,9 @@ function push: switchFullscreen(winw, winh)
     end
 end
 
+--- 
+---@param w any
+---@param h any
 function push: resize(w, h)
     if self._highdpi then
         w, h = w / self._PSCALE, h / self._PSCALE

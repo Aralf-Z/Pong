@@ -103,17 +103,12 @@ function love.draw()
 
     love.graphics.printf(Player1Y .. "---" .. Player2Y, 0, 40, VIRTUAL_WIDTH, "center")
 
-    --[[
-    love.graphics.setFont(ScoreFont)
-    love.graphics.print(tostring(Player1Score), VIRTUAL_WIDTH / 2 - 50, VIRTUAL_HEIGHT / 3)
-    love.graphics.print(tostring(Player2Score), VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
-    ]]
 
-    love.graphics.rectangle("fill", 10, 30, 5, 20)
+    love.graphics.rectangle("fill", 10, Player1Y, 5, 20)
 
-    love.graphics.rectangle("fill", VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 50, 5, 20)
+    love.graphics.rectangle("fill", VIRTUAL_WIDTH - 10, Player2Y, 5, 20)
 
-    love.graphics.rectangle("fill", VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4 ,4)
+    love.graphics.rectangle("fill", BallX, BallY, 4 ,4)
 
     Push: apply("end")
 end

@@ -56,8 +56,9 @@ function love.load()
     -- Initialize window with virtual resolution
     Push: setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
-        resizable = false,
-        vsync = true
+        resizable = true,
+        vsync = true,
+        canvas = false,
     })
 
     -- Initialize score
@@ -74,6 +75,10 @@ function love.load()
     TheBall = Ball(VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
 
     GameState = "start"
+end
+
+function love.resize(w, h)
+    Push: resize(w, h)
 end
 
 function love.update(dt)
@@ -212,7 +217,7 @@ end
 
 function love.draw()
     -- Begin rendering at virtual resolution
-    Push: apply("start")
+    Push: start()
 
     love.graphics.clear(40/255, 45/255, 52/255, 255/255)
 
@@ -252,13 +257,14 @@ function love.draw()
 
     DisplayFPS()
 
-    Push: apply("end")
+    Push: finish()
 end
 
 function DisplayFPS()
     love.graphics.setFont(SmallFont)
     love.graphics.setColor(0, 255/255, 0, 255/255)
     love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 10, 10)
+    love.graphics.setColor(255, 255, 255, 255)
 end
 
 

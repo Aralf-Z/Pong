@@ -79,7 +79,7 @@ local function new(class)
     end})
 end
 
-if ClassCommons ~= false and not Common then
+if class_commons ~= false and not Common then
     Common = {}
     function Common.class(name, prototype, parent)
         return new{__includes = {prototype, parent}}

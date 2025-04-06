@@ -1,13 +1,5 @@
 --[[
-
-    main.lua
-
-]]
-
---[[
-    push is a library that will allow us to draw our game at a virtual
-    resolution, instead of however large our window is; used to provide
-    a more retro aesthetic
+    push is a library that will allow us to draw our game at a virtual resolution, instead of however large our window is; used to provide a more retro aesthetic
 
     https://github.com/Ulydev/push
 ]]
@@ -20,7 +12,14 @@ Push = require "push"
 ]]
 Class = require "class"
 
+--[[
+    the paddle class that players control
+]]
 require "Paddle"
+
+--[[
+    the ball class that players hit with paddles
+]]
 require "Ball"
 
 WINDOW_WIDTH = 1280
@@ -32,6 +31,7 @@ VIRTUAL_HEIGHT = 243
 PADDLE_SPEED = 200
 
 function love.load()
+    -- Sets the default scaling filters used with Images, Canvases, and Fonts.
     love.graphics.setDefaultFilter("nearest", "nearest")
 
     math.randomseed(os.time())
@@ -39,23 +39,28 @@ function love.load()
     SmallFont = love.graphics.newFont("font.ttf", 8)
     ScoreFont = love.graphics.newFont("font.ttf", 32)
 
+    -- Set active font to the smallFont object
     love.graphics.setFont(SmallFont)
 
+    -- Initialize window with virtual resolution
     Push: setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
         resizable = false,
         vsync = true
     })
 
+    -- Initialize Player1 and Player2
     Player1 = Paddle(10, 30, 5, 20)
     Player2 = Paddle(VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 30, 5, 20)
 
-    ball = Ball(VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
+    -- Initialize the ball
+    TheBall = Ball(VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
 
     GameState = "start"
 end
 
 function love.update(dt)
+    -- Player1 movement
     if love.keyboard.isDown("w") then
         Player1.dy = -PADDLE_SPEED
     elseif love.keyboard.isDown("s") then
@@ -64,6 +69,7 @@ function love.update(dt)
         Player1.dy = 0
     end
 
+    -- Player2 movement
     if love.keyboard.isDown("up") then
         Player2.dy = -PADDLE_SPEED
     elseif love.keyboard.isDown("down") then
@@ -72,8 +78,9 @@ function love.update(dt)
         Player2.dy = 0
     end
 
+    -- TheBall movement
     if GameState == "play" then
-        ball: update(dt)
+        TheBall: update(dt)
     end
 
     Player1: update(dt)
@@ -89,20 +96,16 @@ function love.keypressed(key)
         else
             GameState = "start"
 
-            BallX = VIRTUAL_WIDTH / 2 - 2
-            BallY = VIRTUAL_HEIGHT / 2 - 2
-
-            BallDx = math.random(2) == 1 and 100 or -100
-            BallDy = math.random(-50, 50) * 1.5
+            TheBall: reset()
         end
     end
 end
 
 function love.draw()
-
+    -- Begin rendering at virtual resolution
     Push: apply("start")
 
-    --love.graphics.clear(40,/255, 45/255, 52/255, 255/255, true, true)
+    --love.graphics.clear(40,/255, 45/255, 52/255, 255/255)
     love.graphics.clear()
 
     --[[
@@ -116,6 +119,7 @@ function love.draw()
     ]]
 
     love.graphics.setFont(SmallFont)
+
     if GameState == "start" then
         love.graphics.printf("Hello Start State!", 0, 20, VIRTUAL_WIDTH, "center")
     elseif GameState == "play" then
@@ -131,7 +135,15 @@ function love.draw()
     Player1: render()
     Player2: render()
 
-    ball: render()
+    TheBall: render()
+
+    DisplayFPS()
 
     Push: apply("end")
+end
+
+function DisplayFPS()
+    love.graphics.setFont(SmallFont)
+    love.graphics.setColor(0, 255/255, 0, 255/255)
+    love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 10, 10)
 end

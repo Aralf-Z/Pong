@@ -34,6 +34,9 @@ function love.load()
     -- Sets the default scaling filters used with Images, Canvases, and Fonts.
     love.graphics.setDefaultFilter("nearest", "nearest")
 
+    -- Set the title of our application window
+    love.window.setTitle("Pong")
+
     math.randomseed(os.time())
 
     SmallFont = love.graphics.newFont("font.ttf", 8)
@@ -49,6 +52,10 @@ function love.load()
         vsync = true
     })
 
+    -- Initialize score
+    Player1Score = 0
+    Player2Score = 0
+
     -- Initialize Player1 and Player2
     Player1 = Paddle(10, 30, 5, 20)
     Player2 = Paddle(VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 30, 5, 20)
@@ -60,6 +67,40 @@ function love.load()
 end
 
 function love.update(dt)
+    -- Collides
+    if GameState == "play" then
+        if TheBall: collides(Player1) then
+            TheBall.dx = - TheBall.dx * 1.03
+            TheBall.x = Player1.x + 5
+            if TheBall.dy < 0 then
+                TheBall.dy = -math.random(10, 150)
+            else
+                TheBall.dy = math.random(10, 150)
+            end
+        end
+
+        if TheBall: collides(Player2) then
+            TheBall.dx = - TheBall.dx * 1.03
+            TheBall.x = Player2.x - 4
+
+            if TheBall.dy < 0 then
+                TheBall.dy = -math.random(10, 150)
+            else
+                TheBall.dy = math.random(10, 150)
+            end
+        end
+
+        if TheBall.y <= 0 then
+            TheBall.y = 0
+            TheBall.dy = - TheBall.dy
+        end
+
+        if TheBall.y >= VIRTUAL_HEIGHT - 4 then
+            TheBall.y = VIRTUAL_HEIGHT - 4
+            TheBall.dy = -TheBall.dy
+        end
+    end
+
     -- Player1 movement
     if love.keyboard.isDown("w") then
         Player1.dy = -PADDLE_SPEED
@@ -118,19 +159,18 @@ function love.draw()
     )
     ]]
 
+    -- GamseState On UI
     love.graphics.setFont(SmallFont)
-
     if GameState == "start" then
         love.graphics.printf("Hello Start State!", 0, 20, VIRTUAL_WIDTH, "center")
     elseif GameState == "play" then
         love.graphics.printf("Hello Play State!", 0, 20, VIRTUAL_WIDTH, "center")
     end
 
-    --[[
+    -- Scores of Players
     love.graphics.setFont(ScoreFont)
     love.graphics.print(tostring(Player1Score), VIRTUAL_WIDTH / 2 - 50, VIRTUAL_HEIGHT / 3)
     love.graphics.print(tostring(Player2Score), VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
-    ]]
 
     Player1: render()
     Player2: render()

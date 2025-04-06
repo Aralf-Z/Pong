@@ -192,8 +192,6 @@ function love.draw()
     elseif GameState == "play" then
     end
 
-    love.graphics.printf(TheBall.dx .. "_" .. TheBall.dy, 0, 30, VIRTUAL_WIDTH, "center")
-
     DisplayScore()
 
     Player1: render()
